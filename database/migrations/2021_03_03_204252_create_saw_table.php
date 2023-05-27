@@ -55,6 +55,7 @@ class CreateSawTable extends Migration
             $table->string('satuan')->nullable();
             $table->float('bobot', 5, 2)->nullable();
             $table->boolean('crips')->nullable();
+			$table->enum('tipe_data', ['integer', 'float', 'crips'])->nullable();
             $table->unsignedBigInteger('crips_id')->nullable();
             $table->timestamps();
 

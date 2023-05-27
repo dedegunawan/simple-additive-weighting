@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\Atribut;
+use App\Models\Crips;
 use App\Models\CripsDetail;
 use App\Models\Kriteria;
 use App\Models\Mahasiswa;
@@ -22,6 +23,30 @@ class MahasiswaComponent extends Component
     public $penghasilanLists=[];
     public $prestasiLists=[];
     protected $paginationTheme = 'bootstrap';
+	const CRIPS_PENGHASILAN = 'Penghasilan Orang Tua';
+	const CRIPS_PRESTASI = 'Prestasi';
+
+	const KRITERIA_IPK = 'IPK';
+	const KRITERIA_PENGHASILAN = 'Penghasilan Ortu/bln';
+	const KRITERIA_TANGGUNGAN = 'Jumlah Tanggungan';
+	const KRITERIA_PRESTASI = 'Prestasi';
+	const KRITERIA_LOKASI_RUMAH = 'Lokasi Rumah';
+
+	public function getKriteriaIpk() {
+		return Kriteria::where('nama_kriteria', self::KRITERIA_IPK)->first();
+	}
+	public function getKriteriaPenghasilan() {
+		return Kriteria::where('nama_kriteria', self::KRITERIA_PENGHASILAN)->first();
+	}
+	public function getKriteriaTanggungan() {
+		return Kriteria::where('nama_kriteria', self::KRITERIA_TANGGUNGAN)->first();
+	}
+	public function getKriteriaPrestasi() {
+		return Kriteria::where('nama_kriteria', self::KRITERIA_PRESTASI)->first();
+	}
+	public function getKriteriaLokasiRumah() {
+		return Kriteria::where('nama_kriteria', self::KRITERIA_LOKASI_RUMAH)->first();
+	}
 
     public function openModal()
     {
@@ -34,14 +59,18 @@ class MahasiswaComponent extends Component
 
     public function getPenghasilanLists()
     {
-        return CripsDetail::where('crips_id', '1')
+		$crips = Crips::where('nama_crips', self::CRIPS_PENGHASILAN)->first();
+		if (!$crips) throw new \Exception("Crips penghasilan tidak ada, pastikan menjalankan migrate db dulu");
+        return CripsDetail::where('crips_id', $crips['id'])
             ->orderBy('kelompok', 'asc')
             ->get();
     }
 
     public function getPrestasiLists()
     {
-        return CripsDetail::where('crips_id', '2')
+	    $crips = Crips::where('nama_crips', self::CRIPS_PRESTASI)->first();
+	    if (!$crips) throw new \Exception("Crips prestasi tidak ada, pastikan menjalankan migrate db dulu");
+        return CripsDetail::where('crips_id', $crips['id'])
             ->orderBy('kelompok', 'asc')
             ->get();
     }
@@ -93,35 +122,35 @@ class MahasiswaComponent extends Component
 
         $ipk = Atribut::updateOrCreate([
             'mahasiswa_id' => $mahasiswa->id,
-            'kriteria_id' => 1
+            'kriteria_id' => $this->getKriteriaIpk()['id']
         ], [
             'value' => number_format($this->ipk, 2)
         ]);
 
         $penghasilan = Atribut::updateOrCreate([
             'mahasiswa_id' => $mahasiswa->id,
-            'kriteria_id' => 2
+            'kriteria_id' => $this->getKriteriaPenghasilan()['id']
         ], [
             'value' => (int) $this->penghasilan
         ]);
 
         $jumlah_tanggungan = Atribut::updateOrCreate([
             'mahasiswa_id' => $mahasiswa->id,
-            'kriteria_id' => 3
+            'kriteria_id' => $this->getKriteriaTanggungan()['id']
         ], [
             'value' => (int) $this->jumlah_tanggungan
         ]);
 
         $prestasi = Atribut::updateOrCreate([
             'mahasiswa_id' => $mahasiswa->id,
-            'kriteria_id' => 4
+            'kriteria_id' => $this->getKriteriaPrestasi()['id']
         ], [
             'value' => (int) $this->prestasi
         ]);
 
         $lokasi_rumah = Atribut::updateOrCreate([
             'mahasiswa_id' => $mahasiswa->id,
-            'kriteria_id' => 5
+            'kriteria_id' => $this->getKriteriaLokasiRumah()['id']
         ], [
             'value' => (int) $this->lokasi_rumah
         ]);
@@ -153,31 +182,31 @@ class MahasiswaComponent extends Component
 
         $ipk = Atribut::where([
             'mahasiswa_id' => $mahasiswa->id,
-            'kriteria_id' => 1
+            'kriteria_id' => $this->getKriteriaIpk()['id']
         ])->first();
         $this->ipk = $ipk ? number_format($ipk->real_value, 2) : '';
 
         $penghasilan = Atribut::where([
             'mahasiswa_id' => $mahasiswa->id,
-            'kriteria_id' => 2
+            'kriteria_id' => $this->getKriteriaPenghasilan()['id']
         ])->first();
         $this->penghasilan = $penghasilan ? $penghasilan->real_value : '';
 
         $jumlah_tanggungan = Atribut::where([
             'mahasiswa_id' => $mahasiswa->id,
-            'kriteria_id' => 3
+            'kriteria_id' => $this->getKriteriaTanggungan()['id']
         ])->first();
         $this->jumlah_tanggungan = $jumlah_tanggungan ? $jumlah_tanggungan->real_value : '';
 
         $prestasi = Atribut::where([
             'mahasiswa_id' => $mahasiswa->id,
-            'kriteria_id' => 4
+            'kriteria_id' => $this->getKriteriaPrestasi()['id']
         ])->first();
         $this->prestasi = $prestasi ? $prestasi->real_value : '';
 
         $lokasi_rumah = Atribut::where([
             'mahasiswa_id' => $mahasiswa->id,
-            'kriteria_id' => 5
+            'kriteria_id' => $this->getKriteriaLokasiRumah()['id']
         ])->first();
         $this->lokasi_rumah = $lokasi_rumah ? $lokasi_rumah->real_value : '';
 
