@@ -26,3 +26,9 @@ DB_PASSWORD=password_db_nya_biasanya_kosong
 ## Default User
 - Email : gunawan@dede.web.id
 - Password : dedegunawan
+
+## Donasi
+Bantu saya untuk terus berkarya membuat aplikasi yang bermanfaat.
+
+- Saweria - [https://saweria.co/veza](https://saweria.co/veza)
+- Trakteer - [https://trakteer.id/vezalinetechnology](https://trakteer.id/vezalinetechnology)
